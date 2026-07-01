@@ -60,6 +60,21 @@ Every version released on production must be identified by git tag, for example
 
 `develop`
 
+Develop branch represents integrated development environment. On this branch there are 
+updates coming from:
+- branch feature/*
+- branch bugfix/*
+<br/>
+<b>Main Rules</b>:
+- is not allowed direct push;
+- updates must arrives through Pull Request;
+- before merge from Pull Request must be completed some checks like build, automated tests passed successfully and code review;
+- branch must always remain in working state.
+
+When `develop` contains a set of stable feature in state ready for release, it can be merged
+
+
+
 ---
 
 Working branches
