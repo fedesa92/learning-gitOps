@@ -2,7 +2,7 @@
 Project for learning and make practice on localhost using GitOps approach with OpenShift, k8s, tekton, docker, argoCD
 
 # Rule sets
-Projects collaborators and admin cannot push directly on main branch
+Projects collaborators cannot push directly on main branch
 
 # Versioning
 Project uses semantic versioning with format MAJOR.MINOR.PATCH
