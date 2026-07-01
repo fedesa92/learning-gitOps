@@ -2,7 +2,8 @@
 Project for learning and make practice on localhost using GitOps approach with OpenShift, k8s, tekton, docker, argoCD
 
 # Rule sets
-Projects collaborators cannot push directly on main branch
+Projects collaborators cannot push directly on main branch.
+
 
 # Versioning
 Project uses semantic versioning with format MAJOR.MINOR.PATCH
@@ -169,3 +170,19 @@ git push origin develop
 ```
 
 Pull Request
+
+Every updates must be integrated through a Pull Request. PR must follow these rules:
+- have a clear title;
+- describe updates introduced;
+- link task, bug of updates;
+- must be reviewed at least by one team member;
+- pass any build and test pipelines;
+- not contains conflicts;
+- not introduce unnecessary code or code unrelated to the purpose of the PR.
+
+Example:
+Feature: add user login  
+Bugfix: fix form validation
+Hotfix: fix login error on production 
+Release: add 1.1.0 version
+
