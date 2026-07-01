@@ -186,3 +186,41 @@ Bugfix: fix form validation
 Hotfix: fix login error on production 
 Release: add 1.1.0 version
 
+---
+
+Standard development workflow
+
+`feature` 
+develop
+   ↓
+feature/name-feature
+   ↓
+Pull Request
+   ↓
+develop
+   ↓
+main
+   ↓
+tag
+
+`bugfix`
+develop
+   ↓
+bugfix/bug-description
+   ↓
+Pull Request
+   ↓
+develop
+
+`hotfix`
+main
+   ↓
+hotfix/problem-description
+   ↓
+Pull Request
+   ↓
+main
+   ↓
+tag
+   ↓
+develop
