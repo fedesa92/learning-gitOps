@@ -252,12 +252,13 @@ graph TD
 ```
 
 Argo CD continuously compares:
-
+```bash
 Desired State
 
 vs
 
 Current State
+```
 
 Differences are automatically reconciled.
 
