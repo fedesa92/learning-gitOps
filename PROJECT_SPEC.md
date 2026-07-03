@@ -168,27 +168,14 @@ Chapter 7
 
 Complete GitOps Platform
 
-Git
-
-↓
-
-Tekton
-
-↓
-
-Container Registry
-
-↓
-
-Manifest Repository
-
-↓
-
-Argo CD
-
-↓
-
-OpenShift Cluster
+```mermaid
+graph TD
+    A[Git Repository] --> B[Tekton Pipeline]
+    B --> C[Container Registry]
+    C --> D[Manifest Repository]
+    D --> E[Argo CD]
+    E --> F[OpenShift Cluster]
+```
 
 ---
 
