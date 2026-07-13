@@ -1,0 +1,22 @@
+$accent: #92400e;
+$soft-border: #ddd6c9;
+
+.bookstore-shell {
+  background:
+    radial-gradient(circle at top right, rgba(245, 158, 11, 0.2), transparent 32rem),
+    #f7f3ec;
+
+  .hero-accent {
+    color: $accent;
+    letter-spacing: 0.12em;
+  }
+
+  .book-panel {
+    border: 1px solid $soft-border;
+    backdrop-filter: blur(10px);
+  }
+
+  .book-row + .book-row {
+    border-top: 1px solid #e5ded3;
+  }
+}
