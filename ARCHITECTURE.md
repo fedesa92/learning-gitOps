@@ -118,27 +118,30 @@ graph TD
 # Repository Layout
 
 ```
-bookstore-platform/
+├── PROJECT_SPEC.md
+├── ARCHITECTURE.md
+├── DEVELOPMENT_ENVIRONMENT.md
+├── README.md
+├── .gitignore
+├── .env.example
+├── frontend/
+├── backend/
+├── database/
+├── docker/
+├── kubernetes/
+├── helm/
+├── openshift/
+├── tekton/
+├── argocd/
+├── scripts/
+│   ├── check-env.sh
+│   ├── check-kubernetes-env.sh
+│   ├── check-helm-env.sh
+│   ├── check-gitops-env.sh
+│   ├── kind-create.sh
+│   └── kind-delete.sh
+└── documentation/
 
-frontend/
-
-backend/
-
-database/
-
-docker/
-
-kubernetes/
-
-helm/
-
-openshift/
-
-tekton/
-
-argocd/
-
-docs/
 ```
 
 Every directory has a single responsibility.
