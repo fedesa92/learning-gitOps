@@ -1038,7 +1038,7 @@ Recommended initial structure:
 
 ```text
 bookstore-platform/
-├── BOOK_SPEC.md
+├── PROJECT_SPEC.md
 ├── ARCHITECTURE.md
 ├── DEVELOPMENT_ENVIRONMENT.md
 ├── README.md
@@ -1060,8 +1060,7 @@ bookstore-platform/
 │   ├── check-gitops-env.sh
 │   ├── kind-create.sh
 │   └── kind-delete.sh
-├── book/
-└── docs/
+└── documentation/
 ```
 
 The `argocd/` and `tekton/` directories contain declarative resources for components that run inside the cluster. They do not replace the optional host CLIs.

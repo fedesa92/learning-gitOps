@@ -121,7 +121,6 @@ bookstore/
 |-- PROJECT_SPEC.md
 |-- ARCHITECTURE.md
 |-- README.md
-|-- AGENTS.md
 |-- .gitignore
 |-- .env.example
 |-- frontend/
