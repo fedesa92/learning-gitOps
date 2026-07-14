@@ -13,6 +13,54 @@ concurrency:
     cancel-in-progress: true
 
 jobs:
+    pr-target-policy:
+      name: PR Target Policy
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Validate source and target branches
+          env:
+            # Source branch containing the proposed changes.
+            # Example: feature/create-gitflow-check
+            HEAD_BRANCH: ${{ github.head_ref }}
+
+            # Destination branch selected when the pull request is opened.
+            # Example: develop
+            BASE_BRANCH: ${{ github.base_ref }}
+          run: |
+            # Apply the repository GitFlow rules according to the source branch name.
+            case "$HEAD_BRANCH" in
+              # Feature and non-critical bug-fix branches must be integrated into develop.
+              feature/*|bugfix/*)
+                if [ "$BASE_BRANCH" != "develop" ]; then
+                  echo "::error::$HEAD_BRANCH must target develop"
+                  exit 1
+                fi
+                ;;
+
+              # Stable changes collected in develop are promoted to main.
+              develop)
+                if [ "$BASE_BRANCH" != "main" ]; then
+                  echo "::error::develop must target main"
+                  exit 1
+                fi
+                ;;
+
+              # A hotfix is first merged into main and then propagated to develop.
+              hotfix/*)
+                if [ "$BASE_BRANCH" != "main" ] && [ "$BASE_BRANCH" != "develop" ]; then
+                  echo "::error::$HEAD_BRANCH must target main or develop"
+                  exit 1
+                fi
+                ;;
+
+              # Reject branches that do not follow one of the supported naming conventions.
+              *)
+                echo "::error::Unsupported source branch: $HEAD_BRANCH"
+                exit 1
+                ;;
+            esac
+
     frontend-build:
       name: Frontend Build
       runs-on: ubuntu-latest

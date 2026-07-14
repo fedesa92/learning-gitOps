@@ -51,7 +51,7 @@ Main branch represents the code currently released on production.
 - force push is not allowed;
 - changes arrives only through Pull Request;
 - merge on main can be executed only by admin or by authorized maintainer;
-- every merge into main must come from develop, `release/*` or `hotfix/*` branch;
+- every merge into main must come from `develop` or a `hotfix/*` branch;
 
 Every version released on production must be identified by git tag, for example
 ```bash
@@ -183,8 +183,7 @@ Every updates must be integrated through a Pull Request. PR must follow these ru
 Example:
 Feature: add user login  
 Bugfix: fix form validation
-Hotfix: fix login error on production 
-Release: add 1.1.0 version
+Hotfix: fix login error on production
 
 ---
 
