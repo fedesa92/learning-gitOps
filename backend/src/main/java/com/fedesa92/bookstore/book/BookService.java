@@ -1,4 +1,4 @@
-package com.fedesa92.bookstore.domain.book;
+package com.fedesa92.bookstore.book;
 
 import java.util.List;
 

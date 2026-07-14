@@ -1,4 +1,4 @@
-package com.fedesa92.bookstore.web;
+package com.fedesa92.bookstore.book.web;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

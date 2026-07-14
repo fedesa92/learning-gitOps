@@ -1,100 +1,100 @@
-# OpenShift GitOps in pratica
+# OpenShift GitOps in Practice
 
-## Capitolo 1 - Perche Docker non basta piu
+## Chapter 1 - Why Docker Is No Longer Enough
 
-Laboratorio 100% localhost-first.
+A 100% localhost-first lab.
 
-Nessun cloud e obbligatorio. Gli esercizi si eseguono sul PC del lettore con Docker o Podman e, nei capitoli successivi, OpenShift Local o OKD.
+No cloud environment is required. The exercises run on the reader's computer with Docker or Podman and, in later chapters, OpenShift Local or OKD.
 
-Stack del libro: React, Spring Boot, PostgreSQL, Docker o Podman, Kubernetes, OpenShift, Tekton, Argo CD e GitHub webhook.
+Book stack: React, Spring Boot, PostgreSQL, Docker or Podman, Kubernetes, OpenShift, Tekton, Argo CD, and GitHub webhooks.
 
 ---
 
-## Obiettivo del capitolo
+## Chapter objective
 
-In questo capitolo partiamo dal punto piu familiare per uno sviluppatore: eseguire sul proprio PC una piccola applicazione composta da frontend, backend e database.
+In this chapter, we start from the most familiar place for a developer: running a small application made up of a frontend, backend, and database on a local computer.
 
-Non useremo ancora Kubernetes, OpenShift, Helm, Tekton o Argo CD. Queste tecnologie verranno introdotte soltanto quando il problema da risolvere le rendera necessarie.
+We will not use Kubernetes, OpenShift, Helm, Tekton, or Argo CD yet. These technologies will be introduced only when they become necessary to solve a specific problem.
 
-Alla fine del capitolo avrai:
+By the end of the chapter, you will have:
 
-- una struttura iniziale del progetto BookStore;
-- un frontend React eseguito tramite Nginx;
-- un backend Spring Boot eseguito come JAR;
-- un database PostgreSQL persistente;
-- un ambiente localhost avviabile con Docker Compose;
-- una comprensione pratica dei limiti che conducono a Kubernetes e OpenShift.
+- an initial BookStore project structure;
+- a React frontend served by Nginx;
+- a Spring Boot backend running as a JAR;
+- a persistent PostgreSQL database;
+- a localhost environment that can be started with Docker Compose;
+- a practical understanding of the limitations that lead to Kubernetes and OpenShift.
 
-## 1.1 Il progetto BookStore
+## 1.1 The BookStore project
 
-Useremo la stessa applicazione per tutto il libro. Questo evita esempi scollegati e permette di osservare l'evoluzione reale di un progetto: da applicazione locale a piattaforma GitOps completa.
+We will use the same application throughout the book. This avoids disconnected examples and makes it possible to observe the real evolution of a project: from a local application to a complete GitOps platform.
 
 ```text
 bookstore/
-|-- frontend/                # applicazione React
-|-- backend/                 # API Spring Boot
-|-- database/                # script SQL iniziali
+|-- frontend/                # React application
+|-- backend/                 # Spring Boot API
+|-- database/                # initial SQL scripts
 |-- infrastructure/
-|   |-- docker/              # Docker Compose e file locali
-|   |-- kubernetes/          # introdotto nel Capitolo 2
-|   |-- helm/                # introdotto nel Capitolo 4
-|   |-- openshift/           # introdotto nel Capitolo 3
-|   |-- tekton/              # introdotto nel Capitolo 5
-|   `-- argocd/              # introdotto nel Capitolo 6
+|   |-- docker/              # Docker Compose and local files
+|   |-- kubernetes/          # introduced in Chapter 2
+|   |-- helm/                # introduced in Chapter 4
+|   |-- openshift/           # introduced in Chapter 3
+|   |-- tekton/              # introduced in Chapter 5
+|   `-- argocd/              # introduced in Chapter 6
 `-- README.md
 ```
 
-Le directory delle tecnologie future rappresentano la struttura obiettivo. Vengono create soltanto nel capitolo che introduce la relativa tecnologia.
+The directories for future technologies represent the target structure. They are created only in the chapter that introduces the corresponding technology.
 
-Nel Capitolo 1 useremo esclusivamente `infrastructure/docker/`. Il frontend sara raggiungibile dal browser su localhost, il backend esporra API HTTP e PostgreSQL rimarra nella rete locale Docker, con una porta pubblicata soltanto per comodita didattica.
+In Chapter 1, we will use only `infrastructure/docker/`. The frontend will be accessible from a browser on localhost, the backend will expose HTTP APIs, and PostgreSQL will remain on the local Docker network, with a port published only for learning convenience.
 
-## 1.2 Perche non partiamo subito da OpenShift?
+## 1.2 Why do we not start with OpenShift?
 
-OpenShift risolve problemi che diventano evidenti dopo aver gestito container, configurazioni, reti, crash, aggiornamenti e immagini.
+OpenShift solves problems that become clear after managing containers, configurations, networks, crashes, updates, and images.
 
-Partendo da Docker, ogni oggetto introdotto successivamente avra una motivazione concreta. Docker Compose e sufficiente per il primo ambiente locale, ma non offre un orchestratore multi-nodo, rollout controllati o riconciliazione continua dello stato desiderato.
+By starting with Docker, every resource introduced later will have a concrete purpose. Docker Compose is sufficient for the first local environment, but it does not provide a multi-node orchestrator, controlled rollouts, or continuous reconciliation of the desired state.
 
-## 1.3 Container: cosa ci serve sapere davvero
+## 1.3 Containers: what we really need to know
 
-Un container e un'istanza in esecuzione di un'immagine. Un'immagine e un pacchetto immutabile che contiene applicazione, runtime e dipendenze.
+A container is a running instance of an image. An image is an immutable package that contains an application, its runtime, and its dependencies.
 
-Un container non e una piccola macchina virtuale: condivide il kernel dell'host e isola processi, filesystem, rete e risorse. Questo lo rende piu leggero di una VM, ma non lo trasforma in un orchestratore.
+A container is not a small virtual machine: it shares the host kernel while isolating processes, filesystems, networks, and resources. This makes it lighter than a VM, but it does not turn it into an orchestrator.
 
-## 1.4 Primo ambiente locale con Docker Compose
+## 1.4 The first local environment with Docker Compose
 
-Docker Compose descrive applicazioni multi-container tramite servizi, reti, volumi, variabili d'ambiente e porte.
+Docker Compose describes multi-container applications through services, networks, volumes, environment variables, and ports.
 
-Il laboratorio comprende tre servizi:
+The lab includes three services:
 
-- `postgres` per la persistenza;
-- `backend` per le API Spring Boot;
-- `frontend` per l'interfaccia React servita da Nginx.
+- `postgres` for persistence;
+- `backend` for the Spring Boot APIs;
+- `frontend` for the React interface served by Nginx.
 
-## 1.5 Prerequisito: compilare il backend
+## 1.5 Prerequisite: compile the backend
 
-Il Dockerfile del backend copia un JAR gia compilato. Prima di costruire le immagini, esegui dalla directory `backend/`:
+The backend Dockerfile copies an already compiled JAR. Before building the images, run the following command from the `backend/` directory:
 
 ```bash
 ./mvnw clean package
 ```
 
-Su Windows PowerShell usa l'equivalente:
+On Windows PowerShell, use the equivalent command:
 
 ```powershell
 .\mvnw.cmd clean package
 ```
 
-Al termine deve esistere:
+When the build finishes, the following file must exist:
 
 ```text
 backend/target/bookstore-backend.jar
 ```
 
-La build automatizzata verra spostata nella pipeline nel capitolo dedicato a Tekton.
+The automated build will be moved into the pipeline in the chapter dedicated to Tekton.
 
-## 1.6 File `docker-compose.yml`
+## 1.6 The `docker-compose.yml` file
 
-Crea `infrastructure/docker/docker-compose.yml`:
+Create `infrastructure/docker/docker-compose.yml`:
 
 ```yaml
 services:
@@ -154,24 +154,24 @@ networks:
     driver: bridge
 ```
 
-Il file non usa `container_name`. In questo modo Compose puo assegnare nomi coerenti con il progetto e il servizio `backend` puo essere scalato durante il laboratorio.
+The file does not use `container_name`. This allows Compose to assign names that are consistent with the project and enables the `backend` service to be scaled during the lab.
 
-## 1.7 Cosa significa questo file
+## 1.7 What this file means
 
-- `postgres` usa l'immagine ufficiale PostgreSQL 17.
-- `bookstore_pgdata` conserva i dati oltre il ciclo di vita del container.
-- L'health check usa `pg_isready` per verificare che PostgreSQL accetti connessioni.
-- `backend` viene avviato soltanto quando PostgreSQL e sano.
-- Il backend raggiunge il database attraverso il nome DNS Compose `postgres`.
-- `frontend` viene costruito dalla directory `frontend/` e pubblicato su `localhost:3000`.
-- `bookstore-net` consente ai servizi di comunicare usando i rispettivi nomi.
-- Le porte pubblicate permettono l'accesso dall'host tramite browser, `curl` o strumenti SQL.
+- `postgres` uses the official PostgreSQL 17 image.
+- `bookstore_pgdata` preserves data beyond the container lifecycle.
+- The health check uses `pg_isready` to verify that PostgreSQL accepts connections.
+- `backend` starts only after PostgreSQL is healthy.
+- The backend reaches the database through the Compose DNS name `postgres`.
+- `frontend` is built from the `frontend/` directory and published on `localhost:3000`.
+- `bookstore-net` allows the services to communicate using their respective names.
+- Published ports provide access from the host through a browser, `curl`, or SQL tools.
 
-La porta PostgreSQL viene pubblicata su `localhost:5432` per comodita didattica. In un ambiente reale il database potrebbe rimanere accessibile esclusivamente dalla rete interna.
+The PostgreSQL port is published on `localhost:5432` for learning convenience. In a real environment, the database might be accessible only from the internal network.
 
-## 1.8 Dockerfile del backend Spring Boot
+## 1.8 Spring Boot backend Dockerfile
 
-Crea `backend/Dockerfile`:
+Create `backend/Dockerfile`:
 
 ```dockerfile
 FROM eclipse-temurin:21-jre
@@ -185,13 +185,13 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-Il Dockerfile assume che il JAR sia stato prodotto con `./mvnw clean package`.
+The Dockerfile assumes that the JAR has been produced with `./mvnw clean package`.
 
-## 1.9 Dockerfile del frontend React
+## 1.9 React frontend Dockerfile
 
-Vite sostituisce le variabili `VITE_*` durante la build e le espone al codice client tramite `import.meta.env`. Non devono contenere segreti, perche finiscono nel bundle distribuito al browser.
+Vite replaces `VITE_*` variables during the build and exposes them to client code through `import.meta.env`. They must not contain secrets because they become part of the bundle delivered to the browser.
 
-Crea `frontend/Dockerfile`:
+Create `frontend/Dockerfile`:
 
 ```dockerfile
 FROM node:22-alpine AS build
@@ -215,64 +215,64 @@ COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 80
 ```
 
-Il valore viene passato da Compose tramite `build.args`, prima di `npm run build`. Il container finale contiene soltanto Nginx e gli asset statici prodotti da Vite.
+Compose passes the value through `build.args` before `npm run build`. The final container contains only Nginx and the static assets produced by Vite.
 
-Nel codice React la variabile si legge con:
+In the React code, the variable is read with:
 
 ```ts
 const apiBaseUrl = import.meta.env.VITE_API_BASE_URL;
 ```
 
-## 1.10 Avvio dell'ambiente
+## 1.10 Starting the environment
 
-Dalla directory `infrastructure/docker/`:
+From the `infrastructure/docker/` directory:
 
 ```bash
 docker compose up -d --build
 ```
 
-Endpoint locali:
+Local endpoints:
 
 - frontend: <http://localhost:3000>;
 - backend: <http://localhost:8080>;
 - PostgreSQL: `localhost:5432`.
 
-## 1.11 Prima verifica
+## 1.11 First verification
 
 ```bash
 docker compose ps
 curl http://localhost:8080/actuator/health
 ```
 
-Risposta attesa dal backend:
+Expected response from the backend:
 
 ```json
 {"status":"UP"}
 ```
 
-Il servizio PostgreSQL deve risultare `healthy` nell'output di `docker compose ps`.
+The PostgreSQL service must report a `healthy` status in the output of `docker compose ps`.
 
-## 1.12 Networking: perche il backend usa `postgres` e non `localhost`
+## 1.12 Networking: why the backend uses `postgres` instead of `localhost`
 
-Dentro un container, `localhost` indica il container stesso. Se il backend usasse `localhost:5432`, cercherebbe PostgreSQL dentro il container backend.
+Inside a container, `localhost` refers to the container itself. If the backend used `localhost:5432`, it would look for PostgreSQL inside the backend container.
 
-Compose fornisce una risoluzione DNS interna basata sul nome del servizio:
+Compose provides internal DNS resolution based on service names:
 
 ```text
 backend container
-  localhost:8080  -> backend stesso
-  postgres:5432   -> servizio PostgreSQL su bookstore-net
+  localhost:8080  -> the backend itself
+  postgres:5432   -> PostgreSQL service on bookstore-net
 ```
 
-Per questo la connessione usa:
+This is why the connection uses:
 
 ```text
 jdbc:postgresql://postgres:5432/bookstore
 ```
 
-## 1.13 Persistenza: perche serve un volume
+## 1.13 Persistence: why a volume is required
 
-Senza volume, i dati verrebbero persi eliminando il container PostgreSQL. Il volume nominato conserva i file sul disco dell'host:
+Without a volume, the data would be lost when the PostgreSQL container is removed. The named volume stores the files on the host disk:
 
 ```yaml
 volumes:
@@ -284,110 +284,110 @@ services:
       - bookstore_pgdata:/var/lib/postgresql/data
 ```
 
-## 1.14 Esercitazione 1 - avviare e fermare tutto
+## 1.14 Exercise 1 - start and stop everything
 
-1. Compila il backend con `./mvnw clean package`.
-2. Avvia l'ambiente con `docker compose up -d --build`.
-3. Controlla i servizi con `docker compose ps`.
-4. Apri il frontend su <http://localhost:3000>.
-5. Ferma tutto con `docker compose down`.
-6. Riavvia con `docker compose up -d`.
-7. Verifica che il database abbia conservato i dati.
+1. Compile the backend with `./mvnw clean package`.
+2. Start the environment with `docker compose up -d --build`.
+3. Check the services with `docker compose ps`.
+4. Open the frontend at <http://localhost:3000>.
+5. Stop everything with `docker compose down`.
+6. Start it again with `docker compose up -d`.
+7. Verify that the database has preserved its data.
 
-## 1.15 Simuliamo un crash
+## 1.15 Simulating a crash
 
-Ferma il servizio backend:
+Stop the backend service:
 
 ```bash
 docker compose stop backend
 docker compose ps
 ```
 
-Il backend risulta fermo. Compose puo applicare una policy di riavvio sullo stesso host, ma non distribuisce il carico, non sposta workload tra nodi e non effettua rollout controllati.
+The backend is now stopped. Compose can apply a restart policy on the same host, but it does not distribute traffic, move workloads between nodes, or perform controlled rollouts.
 
-Riavvia il servizio:
+Restart the service:
 
 ```bash
 docker compose up -d backend
 ```
 
-## 1.16 Simuliamo lo scaling
+## 1.16 Simulating scaling
 
-Prova a scalare il backend:
+Try to scale the backend:
 
 ```bash
 docker compose up -d --scale backend=3
 ```
 
-Il mapping fisso `8080:8080` impedisce a piu container di pubblicare contemporaneamente la stessa porta host. Per scalare servirebbe rimuovere il mapping fisso, introdurre un reverse proxy o adottare un orchestratore con un endpoint stabile e bilanciamento.
+The fixed `8080:8080` mapping prevents multiple containers from publishing the same host port at the same time. Scaling would require removing the fixed mapping, introducing a reverse proxy, or adopting an orchestrator with a stable endpoint and load balancing.
 
-## 1.17 Simuliamo un aggiornamento
+## 1.17 Simulating an update
 
-Con Compose e possibile ricostruire e riavviare il backend, ma il controllo di aggiornamenti senza downtime e rollback e limitato. Kubernetes introdurra `Deployment` e rollout dichiarativi proprio per gestire questi casi.
+Compose can rebuild and restart the backend, but it provides limited control over zero-downtime updates and rollbacks. Kubernetes introduces `Deployment` resources and declarative rollouts specifically to handle these cases.
 
-## 1.18 Dove Docker Compose e perfetto
+## 1.18 Where Docker Compose is a perfect fit
 
-- sviluppo locale;
-- applicazioni piccole;
-- test rapidi di frontend, backend e database;
-- demo e ambienti temporanei;
-- onboarding su una singola macchina.
+- local development;
+- small applications;
+- quick frontend, backend, and database tests;
+- demos and temporary environments;
+- onboarding on a single machine.
 
-## 1.19 Dove Docker Compose non basta
+## 1.19 Where Docker Compose is not enough
 
-- alta disponibilita multi-nodo;
-- scheduling automatico;
-- service discovery stabile in un cluster;
-- rollout e rollback controllati;
-- RBAC e gestione multi-team;
-- separazione reale di ambienti;
-- GitOps e riconciliazione continua.
+- multi-node high availability;
+- automatic scheduling;
+- stable service discovery in a cluster;
+- controlled rollouts and rollbacks;
+- RBAC and multi-team management;
+- true environment separation;
+- GitOps and continuous reconciliation.
 
-## 1.20 Perche arriva Kubernetes
+## 1.20 Why Kubernetes comes next
 
-Con Kubernetes non si richiede di avviare un container in una posizione specifica. Si dichiara invece uno stato desiderato: numero di repliche, endpoint stabile, configurazione separata e strategia di aggiornamento.
+With Kubernetes, you do not ask to start a container in a specific location. Instead, you declare a desired state: the number of replicas, a stable endpoint, separate configuration, and an update strategy.
 
-Kubernetes osserva lo stato reale e agisce per avvicinarlo allo stato desiderato. Questo concetto prepara il passaggio a OpenShift.
+Kubernetes observes the actual state and acts to move it toward the desired state. This concept prepares the transition to OpenShift.
 
-## 1.21 Cosa hai imparato
+## 1.21 What you learned
 
-- Docker impacchetta ed esegue applicazioni in container.
-- Docker Compose gestisce applicazioni multi-container su localhost.
-- I servizi sulla stessa rete Compose comunicano tramite il nome del servizio.
-- Gli health check distinguono l'avvio del processo dalla disponibilita del servizio.
-- I volumi conservano i dati oltre la vita del container.
-- Vite incorpora le variabili `VITE_*` nel bundle durante la build.
-- Crash, scaling, rollout e ambienti multipli richiedono un orchestratore.
-- Kubernetes non sostituisce Docker: risolve un problema differente.
+- Docker packages and runs applications in containers.
+- Docker Compose manages multi-container applications on localhost.
+- Services on the same Compose network communicate through service names.
+- Health checks distinguish process startup from service availability.
+- Volumes preserve data beyond the container lifecycle.
+- Vite embeds `VITE_*` variables in the bundle during the build.
+- Crashes, scaling, rollouts, and multiple environments require an orchestrator.
+- Kubernetes does not replace Docker: it solves a different problem.
 
-## 1.22 Errori comuni
+## 1.22 Common mistakes
 
-- usare `localhost` per raggiungere un altro container;
-- dimenticare il volume del database;
-- considerare `depends_on` senza health check come garanzia di disponibilita;
-- passare `VITE_API_BASE_URL` soltanto come variabile runtime dopo la build;
-- inserire segreti in variabili `VITE_*`;
-- pubblicare porte che dovrebbero rimanere interne;
-- usare `container_name` su un servizio da scalare;
-- confondere una policy di restart con l'alta disponibilita.
+- using `localhost` to reach another container;
+- forgetting the database volume;
+- treating `depends_on` without a health check as an availability guarantee;
+- passing `VITE_API_BASE_URL` only as a runtime variable after the build;
+- placing secrets in `VITE_*` variables;
+- publishing ports that should remain internal;
+- using `container_name` on a service that needs to scale;
+- confusing a restart policy with high availability.
 
-## 1.23 Esercizio finale svolto su localhost
+## 1.23 Final exercise completed on localhost
 
-1. Compila il backend.
-2. Avvia BookStore con `docker compose up -d --build`.
-3. Verifica che PostgreSQL sia `healthy`.
-4. Ferma il backend con `docker compose stop backend`.
-5. Verifica che il frontend non riesca piu a chiamare le API.
-6. Riavvia con `docker compose up -d backend`.
-7. Prova a scalare il backend a tre repliche.
-8. Osserva il conflitto sulla porta `8080`.
-9. Documenta nel README i limiti osservati e come Kubernetes li affronta.
+1. Compile the backend.
+2. Start BookStore with `docker compose up -d --build`.
+3. Verify that PostgreSQL is `healthy`.
+4. Stop the backend with `docker compose stop backend`.
+5. Verify that the frontend can no longer call the APIs.
+6. Restart it with `docker compose up -d backend`.
+7. Try to scale the backend to three replicas.
+8. Observe the conflict on port `8080`.
+9. Document the observed limitations and how Kubernetes addresses them in the README.
 
-## 1.24 Collegamento al Capitolo 2
+## 1.24 Connection to Chapter 2
 
-Nel Capitolo 2 la stessa applicazione verra portata su Kubernetes locale. Verranno introdotti Pod, Deployment, Service e Namespace, senza usare ancora OpenShift.
+In Chapter 2, the same application will be moved to a local Kubernetes environment. Pods, Deployments, Services, and Namespaces will be introduced without using OpenShift yet.
 
-## Fonti essenziali
+## Essential sources
 
 - [Docker Compose](https://docs.docker.com/compose/)
 - [Compose file reference](https://docs.docker.com/reference/compose-file/)

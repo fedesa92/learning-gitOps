@@ -1,6 +1,6 @@
-package com.fedesa92.bookstore.web;
+package com.fedesa92.bookstore.book.web;
 
-import com.fedesa92.bookstore.domain.book.Book;
+import com.fedesa92.bookstore.book.Book;
 
 public record BookResponse(Long id, String title, String author, String isbn) {
 

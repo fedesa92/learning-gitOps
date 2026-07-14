@@ -1,4 +1,4 @@
-package com.fedesa92.bookstore.web;
+package com.fedesa92.bookstore.book.web;
 
 import java.net.URI;
 import java.util.List;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fedesa92.bookstore.domain.book.Book;
-import com.fedesa92.bookstore.domain.book.BookService;
+import com.fedesa92.bookstore.book.Book;
+import com.fedesa92.bookstore.book.BookService;
 
 import jakarta.validation.Valid;
 
