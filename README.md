@@ -190,37 +190,35 @@ Release: add 1.1.0 version
 
 Standard development workflow
 
-`feature` 
-develop
-   ↓
-feature/name-feature
-   ↓
-Pull Request
-   ↓
-develop
-   ↓
-main
-   ↓
-tag
+## Standard development workflow
 
-`bugfix`
-develop
-   ↓
-bugfix/bug-description
-   ↓
-Pull Request
-   ↓
-develop
+### Feature workflow
 
-`hotfix`
-main
-   ↓
-hotfix/problem-description
-   ↓
-Pull Request
-   ↓
-main
-   ↓
-tag
-   ↓
-develop
+```mermaid
+flowchart TD
+    A["develop"] --> B["feature/name-feature"]
+    B --> C["Pull Request"]
+    C --> D["develop"]
+    D --> E["main"]
+    E --> F["tag"]
+```
+
+### Bugfix workflow
+
+```mermaid
+flowchart TD
+    A["develop"] --> B["bugfix/bug-description"]
+    B --> C["Pull Request"]
+    C --> D["develop"]
+```
+
+### Hotfix workflow
+
+```mermaid
+flowchart TD
+    A["main"] --> B["hotfix/problem-description"]
+    B --> C["Pull Request"]
+    C --> D["main"]
+    D --> E["tag"]
+    E --> F["develop"]
+```
