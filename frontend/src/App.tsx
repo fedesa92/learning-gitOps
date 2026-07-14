@@ -1,5 +1,5 @@
-import type { FormEvent } from 'react'
-import { useEffect, useState } from 'react'
+import type { FormEvent } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Alert,
   Box,
@@ -14,12 +14,12 @@ import {
   ThemeProvider,
   Typography,
   createTheme,
-} from '@mui/material'
-import './App.scss'
-import { createBook, deleteBook, getBooks } from './api/books'
-import type { Book, BookInput } from './types/book'
+} from '@mui/material';
+import './App.scss';
+import { createBook, deleteBook, getBooks } from './api/books';
+import type { Book, BookInput } from './types/book';
 
-const emptyBook: BookInput = { title: '', author: '', isbn: '' }
+const emptyBook: BookInput = { title: '', author: '', isbn: '' };
 
 const theme = createTheme({
   palette: {
@@ -29,40 +29,40 @@ const theme = createTheme({
   },
   shape: { borderRadius: 12 },
   typography: { fontFamily: 'Inter, ui-sans-serif, system-ui, sans-serif' },
-})
+});
 
 function App() {
-  const [books, setBooks] = useState<Book[]>([])
-  const [form, setForm] = useState<BookInput>(emptyBook)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [books, setBooks] = useState<Book[]>([]);
+  const [form, setForm] = useState<BookInput>(emptyBook);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     getBooks()
       .then(setBooks)
       .catch(() => setError('The backend API is not available.'))
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => setLoading(false));
+  }, []);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    setError(null)
+    event.preventDefault();
+    setError(null);
     try {
-      const created = await createBook(form)
-      setBooks((current) => [...current, created])
-      setForm(emptyBook)
+      const created = await createBook(form);
+      setBooks((current) => [...current, created]);
+      setForm(emptyBook);
     } catch {
-      setError('The book could not be saved.')
+      setError('The book could not be saved.');
     }
   }
 
   async function handleDelete(id: number) {
-    setError(null)
+    setError(null);
     try {
-      await deleteBook(id)
-      setBooks((current) => current.filter((book) => book.id !== id))
+      await deleteBook(id);
+      setBooks((current) => current.filter((book) => book.id !== id));
     } catch {
-      setError('The book could not be deleted.')
+      setError('The book could not be deleted.');
     }
   }
 
@@ -72,10 +72,10 @@ function App() {
       <Box className="bookstore-shell min-h-screen py-12">
         <Container maxWidth="md" className="grid gap-6">
           <header className="py-6">
-            <Typography className="hero-accent" variant="overline" sx={{ fontWeight: 800 }}>
-              Chapter 1 · Docker Compose
-            </Typography>
-            <Typography variant="h1" sx={{ fontSize: { xs: '2.8rem', md: '4.5rem' }, fontWeight: 800 }}>
+            <Typography
+              variant="h1"
+              sx={{ fontSize: { xs: '2.8rem', md: '4.5rem' }, fontWeight: 800 }}
+            >
               BookStore Platform
             </Typography>
             <Typography color="text.secondary" sx={{ fontSize: '1.15rem' }}>
@@ -84,41 +84,108 @@ function App() {
           </header>
 
           <Paper className="book-panel p-6" elevation={3}>
-            <Typography variant="h5" component="h2" sx={{ fontWeight: 700 }} gutterBottom>
+            <Typography
+              variant="h5"
+              component="h2"
+              sx={{ fontWeight: 700 }}
+              gutterBottom
+            >
               Add a book
             </Typography>
-            <Box component="form" className="grid gap-4 md:grid-cols-3" onSubmit={handleSubmit}>
-              <TextField required label="Title" value={form.title}
-                onChange={(event) => setForm({ ...form, title: event.target.value })} />
-              <TextField required label="Author" value={form.author}
-                onChange={(event) => setForm({ ...form, author: event.target.value })} />
-              <TextField required label="ISBN" value={form.isbn}
+            <Box
+              component="form"
+              className="grid gap-4 md:grid-cols-3"
+              onSubmit={handleSubmit}
+            >
+              <TextField
+                required
+                label="Title"
+                value={form.title}
+                onChange={(event) =>
+                  setForm({ ...form, title: event.target.value })
+                }
+              />
+              <TextField
+                required
+                label="Author"
+                value={form.author}
+                onChange={(event) =>
+                  setForm({ ...form, author: event.target.value })
+                }
+              />
+              <TextField
+                required
+                label="ISBN"
+                value={form.isbn}
                 slotProps={{ htmlInput: { maxLength: 20 } }}
-                onChange={(event) => setForm({ ...form, isbn: event.target.value })} />
-              <Button className="md:col-span-3" type="submit" variant="contained" size="large">
+                onChange={(event) =>
+                  setForm({ ...form, isbn: event.target.value })
+                }
+              />
+              <Button
+                className="md:col-span-3"
+                type="submit"
+                variant="contained"
+                size="large"
+              >
                 Save book
               </Button>
             </Box>
           </Paper>
 
           <Paper className="book-panel p-6" elevation={3}>
-            <Stack direction="row" sx={{ justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h5" component="h2" sx={{ fontWeight: 700 }}>Catalog</Typography>
+            <Stack
+              direction="row"
+              sx={{
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 2,
+              }}
+            >
+              <Typography variant="h5" component="h2" sx={{ fontWeight: 700 }}>
+                Catalog
+              </Typography>
               <Chip label={`${books.length} books`} />
             </Stack>
-            {error && <Alert severity="error" className="mb-4">{error}</Alert>}
-            {loading && <Box className="flex justify-center p-6"><CircularProgress /></Box>}
-            {!loading && books.length === 0 && <Typography>No books are available yet.</Typography>}
+            {error && (
+              <Alert severity="error" className="mb-4">
+                {error}
+              </Alert>
+            )}
+            {loading && (
+              <Box className="flex justify-center p-6">
+                <CircularProgress />
+              </Box>
+            )}
+            {!loading && books.length === 0 && (
+              <Typography>No books are available yet.</Typography>
+            )}
             <Stack>
               {books.map((book) => (
-                <Stack className="book-row py-4" key={book.id} direction="row"
-                  sx={{ justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+                <Stack
+                  className="book-row py-4"
+                  key={book.id}
+                  direction="row"
+                  sx={{
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}
+                >
                   <Box>
-                    <Typography sx={{ fontWeight: 800 }}>{book.title}</Typography>
-                    <Typography color="text.secondary">{book.author}</Typography>
+                    <Typography sx={{ fontWeight: 800 }}>
+                      {book.title}
+                    </Typography>
+                    <Typography color="text.secondary">
+                      {book.author}
+                    </Typography>
                     <Typography variant="caption">ISBN {book.isbn}</Typography>
                   </Box>
-                  <Button color="error" variant="outlined" onClick={() => handleDelete(book.id)}>
+                  <Button
+                    color="error"
+                    variant="outlined"
+                    onClick={() => handleDelete(book.id)}
+                  >
                     Delete
                   </Button>
                 </Stack>
@@ -128,7 +195,7 @@ function App() {
         </Container>
       </Box>
     </ThemeProvider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -118,7 +118,7 @@ Example:
 
 bugfix/fix-validation-form
 
-<b>Main Rules</>:
+<b>Main Rules<b/>:
 1. create branch from `develop`;
 2. fix bug;
 3. open Pull Request with targer `develop`;
@@ -144,7 +144,7 @@ Example:
 
 hotfix/crash-start-app
 
-<b>Main Rules</>:
+<b>Main Rules<b/>:
 1. create branch from `main`;
 2. fix hotfix;
 3. open Pull Request with target `main`;
@@ -189,37 +189,35 @@ Hotfix: fix login error on production
 
 Standard development workflow
 
-`feature` 
-develop
-   ↓
-feature/name-feature
-   ↓
-Pull Request
-   ↓
-develop
-   ↓
-main
-   ↓
-tag
+## Standard development workflow
 
-`bugfix`
-develop
-   ↓
-bugfix/bug-description
-   ↓
-Pull Request
-   ↓
-develop
+### Feature workflow
 
-`hotfix`
-main
-   ↓
-hotfix/problem-description
-   ↓
-Pull Request
-   ↓
-main
-   ↓
-tag
-   ↓
-develop
+```mermaid
+flowchart TD
+    A["develop"] --> B["feature/name-feature"]
+    B --> C["Pull Request"]
+    C --> D["develop"]
+    D --> E["main"]
+    E --> F["tag"]
+```
+
+### Bugfix workflow
+
+```mermaid
+flowchart TD
+    A["develop"] --> B["bugfix/bug-description"]
+    B --> C["Pull Request"]
+    C --> D["develop"]
+```
+
+### Hotfix workflow
+
+```mermaid
+flowchart TD
+    A["main"] --> B["hotfix/problem-description"]
+    B --> C["Pull Request"]
+    C --> D["main"]
+    D --> E["tag"]
+    E --> F["develop"]
+```
