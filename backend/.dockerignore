@@ -1,0 +1,4 @@
+target/*
+!target/bookstore-backend.jar
+.git
+.idea

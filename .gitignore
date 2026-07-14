@@ -55,3 +55,10 @@ dkms.conf
 *.dwo
 
 *.zip
+
+# IDE and editor configuration
+.idea/
+*.iml
+.vscode/
+
+.idea/*
