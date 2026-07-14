@@ -118,7 +118,7 @@ Example:
 
 bugfix/fix-validation-form
 
-<b>Main Rules</>:
+<b>Main Rules<b/>:
 1. create branch from `develop`;
 2. fix bug;
 3. open Pull Request with targer `develop`;
@@ -144,7 +144,7 @@ Example:
 
 hotfix/crash-start-app
 
-<b>Main Rules</>:
+<b>Main Rules<b/>:
 1. create branch from `main`;
 2. fix hotfix;
 3. open Pull Request with target `main`;
