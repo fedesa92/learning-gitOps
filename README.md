@@ -1,5 +1,5 @@
 # learning-gitOps
-Project for learning and make practice on localhost using GitOps approach with OpenShift, k8s, tekton, docker, argoCD, helm.
+Project for learning and practicing a localhost-first GitOps approach with Docker, Kubernetes on Kind, Helm, Tekton and Argo CD.
 
 # Rule sets
 Projects collaborators cannot push directly on main and develop branch.

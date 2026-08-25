@@ -177,7 +177,7 @@ VERSION="24.04 LTS (Noble Numbat)"
 The project uses two categories of tools:
 
 1. **Host tools**, installed on the contributor's workstation or WSL2 environment.
-2. **In-cluster tools**, installed later inside Kubernetes or OpenShift.
+2. **In-cluster tools**, installed later inside Kubernetes on Kind.
 
 ### 3.1 Host tools
 
@@ -198,15 +198,13 @@ The project uses two categories of tools:
 
 ### 3.2 In-cluster tools
 
-These components are not installed as ordinary Ubuntu applications. They are deployed inside Kubernetes or OpenShift when the relevant chapter is reached.
+These components are not installed as ordinary Ubuntu applications. They are deployed inside the Kind cluster when the relevant chapter is reached.
 
 | Tool | Purpose | Required stage |
 |------|---------|----------------|
 | Argo CD | GitOps continuous delivery controller | GitOps |
 | Tekton Pipelines | Kubernetes-native CI pipelines | CI |
 | Tekton Triggers | GitHub webhook processing | CI |
-| OpenShift GitOps | Red Hat distribution of Argo CD | OpenShift GitOps |
-| OpenShift Pipelines | Red Hat distribution of Tekton | OpenShift CI |
 
 The Argo CD CLI is optional. The Argo CD server and controllers still run inside the cluster.
 
@@ -624,7 +622,7 @@ Helm is installed during the environment setup even though it is not required fo
 
 ### 8.9 Optional: install the Argo CD CLI
 
-The Argo CD server and controllers will be installed inside the Kubernetes or OpenShift cluster in a later chapter.
+The Argo CD server and controllers will be installed inside the Kind cluster in a later chapter.
 
 The local CLI is optional but useful for login, synchronization and troubleshooting.
 
@@ -1050,7 +1048,7 @@ bookstore-platform/
 ├── docker/
 ├── kubernetes/
 ├── helm/
-├── openshift/
+├── kind/
 ├── tekton/
 ├── argocd/
 ├── scripts/

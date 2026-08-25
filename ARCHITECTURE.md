@@ -10,7 +10,7 @@ Version: 1.1
 
 BookStore Platform is the reference application used throughout the entire book.
 
-The application evolves chapter by chapter while maintaining the same business domain. The goal is to demonstrate how a modern cloud-native application is designed, containerized, deployed, automated and operated using Kubernetes, OpenShift and GitOps.
+The application evolves chapter by chapter while maintaining the same business domain. The goal is to demonstrate how a modern cloud-native application is designed, containerized, deployed, automated and operated using Kubernetes on Kind and GitOps.
 
 The business functionality remains intentionally simple while the infrastructure becomes progressively more sophisticated.
 
@@ -130,7 +130,7 @@ bookstore/
 |   |-- docker/
 |   |-- kubernetes/
 |   |-- helm/
-|   |-- openshift/
+|   |-- kind/
 |   |-- tekton/
 |   `-- argocd/
 |-- scripts/
@@ -145,8 +145,8 @@ Every directory has a single responsibility. Documentation must never be mixed w
 The layout above is the target layout. Directories are materialized only when introduced by a chapter:
 
 - Chapter 1 creates application components and `infrastructure/docker/`.
-- Chapter 2 introduces `infrastructure/kubernetes/`.
-- Chapter 3 introduces `infrastructure/openshift/`.
+- Chapter 2 introduces `infrastructure/kubernetes/` and `infrastructure/kind/`.
+- Chapter 3 extends the Kubernetes manifests with configuration, ingress and persistent storage.
 - Chapter 4 introduces `infrastructure/helm/`.
 - Chapter 5 introduces `infrastructure/tekton/`.
 - Chapter 6 introduces `infrastructure/argocd/`.
@@ -175,7 +175,7 @@ Rules:
 - Vite `VITE_*` variables are supplied at frontend build time.
 - Vite client variables must never contain secrets.
 - Services intended for scaling must not declare `container_name`.
-- No Kubernetes, OpenShift, Helm, Tekton or Argo CD resources are created in Chapter 1.
+- No Kubernetes, Kind, Helm, Tekton or Argo CD resources are created in Chapter 1.
 
 ---
 
@@ -195,17 +195,17 @@ Later chapters introduce ConfigMap, Secret, PersistentVolume, PersistentVolumeCl
 
 ---
 
-# OpenShift Architecture
+# Kind Cluster Architecture
 
-OpenShift replaces the local Kubernetes environment while preserving the application architecture.
+Kind runs the local Kubernetes environment as Docker containers while preserving a workflow based on standard Kubernetes APIs.
 
-Additional resources include:
+The local platform includes:
 
-- Project
-- Route
-- ImageStream where appropriate
-- BuildConfig for historical context where appropriate
-- Security Context Constraints
+- a declarative Kind cluster configuration;
+- optional worker nodes;
+- host port mappings for ingress traffic;
+- a local image-loading workflow;
+- standard Kubernetes namespaces, Ingress resources and security contexts.
 
 Only the platform capabilities evolve.
 
@@ -250,7 +250,7 @@ Continuous Delivery follows the GitOps model.
 graph TD
     A[Developer] --> B[Git Repository]
     B --> C[Argo CD]
-    C --> D[OpenShift Cluster]
+    C --> D[Kind Cluster]
 ```
 
 Argo CD continuously compares desired state with current state. Differences are reconciled automatically. Manual cluster changes are discouraged, and Git is the single source of truth.
@@ -363,7 +363,7 @@ graph TD
     D --> E[Container Image]
     E --> F[Manifest Update]
     F --> G[Argo CD]
-    G --> H[OpenShift]
+    G --> H[Kind Cluster]
 ```
 
 The workflow intentionally mirrors a production environment.

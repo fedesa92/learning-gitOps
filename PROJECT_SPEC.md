@@ -37,8 +37,8 @@ Everything must contribute to the evolution of the BookStore Platform.
 
 # Target Audience
 
-This book is intended for software developers and DevOps engineers who want to learn Kubernetes 
-and OpenShift from scratch.
+This book is intended for software developers and DevOps engineers who want to learn Kubernetes
+and GitOps from scratch by using a reproducible local Kind cluster.
 
 Typical readers include:
 
@@ -74,7 +74,7 @@ Recommended tools:
 
 Later chapters introduce:
 
-- OpenShift Local (CRC)
+- advanced Kubernetes workloads on Kind
 - Helm
 - Tekton
 - Argo CD
@@ -132,12 +132,12 @@ Kubernetes Fundamentals
 
 Chapter 3
 
-OpenShift
+Kubernetes Application Configuration on Kind
 
-- Projects
-- Routes
-- OpenShift Local
-- Developer Workflow
+- ConfigMap and Secret
+- Ingress
+- Persistent storage
+- Developer workflow
 
 Chapter 4
 
@@ -174,7 +174,7 @@ graph TD
     B --> C[Container Registry]
     C --> D[Manifest Repository]
     D --> E[Argo CD]
-    E --> F[OpenShift Cluster]
+    E --> F[Kind Cluster]
 ```
 
 ---
@@ -226,7 +226,7 @@ Everything required to reproduce the environment should be stored inside the rep
 
 - Kubernetes manifests
 - Helm Charts
-- OpenShift resources
+- Kind cluster configuration
 - Tekton Pipelines
 - Argo CD Applications
 
@@ -254,7 +254,7 @@ At the end of the book, the reader will have built a complete cloud-native platf
 - Source code
 - Docker images
 - Kubernetes manifests
-- OpenShift resources
+- Kind cluster configuration
 - Helm Charts
 - Tekton pipelines
 - Argo CD applications

@@ -1,12 +1,12 @@
-# OpenShift GitOps in Practice
+# Kubernetes GitOps in Practice with Kind
 
 ## Chapter 1 - Why Docker Is No Longer Enough
 
 A 100% localhost-first lab.
 
-No cloud environment is required. The exercises run on the reader's computer with Docker or Podman and, in later chapters, OpenShift Local or OKD.
+No cloud environment is required. The exercises run on the reader's computer with Docker or Podman and, in later chapters, Kubernetes on Kind.
 
-Book stack: React, Spring Boot, PostgreSQL, Docker or Podman, Kubernetes, OpenShift, Tekton, Argo CD, and GitHub webhooks.
+Book stack: React, Spring Boot, PostgreSQL, Docker or Podman, Kubernetes on Kind, Tekton, Argo CD, and GitHub webhooks.
 
 ---
 
@@ -14,7 +14,7 @@ Book stack: React, Spring Boot, PostgreSQL, Docker or Podman, Kubernetes, OpenSh
 
 In this chapter, we start from the most familiar place for a developer: running a small application made up of a frontend, backend, and database on a local computer.
 
-We will not use Kubernetes, OpenShift, Helm, Tekton, or Argo CD yet. These technologies will be introduced only when they become necessary to solve a specific problem.
+We will not use Kubernetes, Kind, Helm, Tekton, or Argo CD yet. These technologies will be introduced only when they become necessary to solve a specific problem.
 
 By the end of the chapter, you will have:
 
@@ -23,7 +23,7 @@ By the end of the chapter, you will have:
 - a Spring Boot backend running as a JAR;
 - a persistent PostgreSQL database;
 - a localhost environment that can be started with Docker Compose;
-- a practical understanding of the limitations that lead to Kubernetes and OpenShift.
+- a practical understanding of the limitations that lead to Kubernetes on Kind.
 
 ## 1.1 The BookStore project
 
@@ -38,7 +38,7 @@ bookstore/
 |   |-- docker/              # Docker Compose and local files
 |   |-- kubernetes/          # introduced in Chapter 2
 |   |-- helm/                # introduced in Chapter 4
-|   |-- openshift/           # introduced in Chapter 3
+|   |-- kind/                # local cluster configuration introduced in Chapter 2
 |   |-- tekton/              # introduced in Chapter 5
 |   `-- argocd/              # introduced in Chapter 6
 `-- README.md
@@ -48,9 +48,9 @@ The directories for future technologies represent the target structure. They are
 
 In Chapter 1, we will use only `infrastructure/docker/`. The frontend will be accessible from a browser on localhost, the backend will expose HTTP APIs, and PostgreSQL will remain on the local Docker network, with a port published only for learning convenience.
 
-## 1.2 Why do we not start with OpenShift?
+## 1.2 Why do we not start with Kind?
 
-OpenShift solves problems that become clear after managing containers, configurations, networks, crashes, updates, and images.
+Kind provides a local Kubernetes cluster, but the problems solved by orchestration become clearer after first managing containers, configurations, networks, crashes, updates, and images directly.
 
 By starting with Docker, every resource introduced later will have a concrete purpose. Docker Compose is sufficient for the first local environment, but it does not provide a multi-node orchestrator, controlled rollouts, or continuous reconciliation of the desired state.
 
@@ -347,7 +347,7 @@ Compose can rebuild and restart the backend, but it provides limited control ove
 
 With Kubernetes, you do not ask to start a container in a specific location. Instead, you declare a desired state: the number of replicas, a stable endpoint, separate configuration, and an update strategy.
 
-Kubernetes observes the actual state and acts to move it toward the desired state. This concept prepares the transition to OpenShift.
+Kubernetes observes the actual state and acts to move it toward the desired state. Kind lets us explore this reconciliation model on a reproducible local cluster.
 
 ## 1.21 What you learned
 
@@ -385,7 +385,7 @@ Kubernetes observes the actual state and acts to move it toward the desired stat
 
 ## 1.24 Connection to Chapter 2
 
-In Chapter 2, the same application will be moved to a local Kubernetes environment. Pods, Deployments, Services, and Namespaces will be introduced without using OpenShift yet.
+In Chapter 2, the same application will be moved to a local Kind cluster. Pods, Deployments, Services, and Namespaces will be introduced using standard Kubernetes resources.
 
 ## Essential sources
 
