@@ -51,7 +51,7 @@ Main branch represents the code currently released on production.
 - force push is not allowed;
 - changes arrives only through Pull Request;
 - merge on main can be executed only by admin or by authorized maintainer;
-- every merge into main must come from develop, `release/*` or `hotfix/*` branch;
+- every merge into main must come from `develop` or a `hotfix/*` branch;
 
 Every version released on production must be identified by git tag, for example
 ```bash
@@ -118,7 +118,7 @@ Example:
 
 bugfix/fix-validation-form
 
-<b>Main Rules</>:
+<b>Main Rules<b/>:
 1. create branch from `develop`;
 2. fix bug;
 3. open Pull Request with targer `develop`;
@@ -144,7 +144,7 @@ Example:
 
 hotfix/crash-start-app
 
-<b>Main Rules</>:
+<b>Main Rules<b/>:
 1. create branch from `main`;
 2. fix hotfix;
 3. open Pull Request with target `main`;
@@ -183,44 +183,41 @@ Every updates must be integrated through a Pull Request. PR must follow these ru
 Example:
 Feature: add user login  
 Bugfix: fix form validation
-Hotfix: fix login error on production 
-Release: add 1.1.0 version
+Hotfix: fix login error on production
 
 ---
 
 Standard development workflow
 
-`feature` 
-develop
-   ↓
-feature/name-feature
-   ↓
-Pull Request
-   ↓
-develop
-   ↓
-main
-   ↓
-tag
+## Standard development workflow
 
-`bugfix`
-develop
-   ↓
-bugfix/bug-description
-   ↓
-Pull Request
-   ↓
-develop
+### Feature workflow
 
-`hotfix`
-main
-   ↓
-hotfix/problem-description
-   ↓
-Pull Request
-   ↓
-main
-   ↓
-tag
-   ↓
-develop
+```mermaid
+flowchart TD
+    A["develop"] --> B["feature/name-feature"]
+    B --> C["Pull Request"]
+    C --> D["develop"]
+    D --> E["main"]
+    E --> F["tag"]
+```
+
+### Bugfix workflow
+
+```mermaid
+flowchart TD
+    A["develop"] --> B["bugfix/bug-description"]
+    B --> C["Pull Request"]
+    C --> D["develop"]
+```
+
+### Hotfix workflow
+
+```mermaid
+flowchart TD
+    A["main"] --> B["hotfix/problem-description"]
+    B --> C["Pull Request"]
+    C --> D["main"]
+    D --> E["tag"]
+    E --> F["develop"]
+```
